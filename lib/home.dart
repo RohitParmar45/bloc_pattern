@@ -11,16 +11,34 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: Material(
         child: Center(
-          child: BlocBuilder<InternetBloc, InternetState>(
+          child: BlocConsumer<InternetBloc, InternetState>(
+            listener: (context, state) {
+              if (state is InternetGainedState) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(
+                    "Connected...",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.green,
+                ));
+              } else if (state is InternetLostState) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text(
+                    "Disconnected...",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  backgroundColor: Colors.red,
+                ));
+              }
+            },
             builder: (context, state) {
               if (state is InternetGainedState) {
-                return Text("Connected");
+                return const Text("Connected");
               } else if (state is InternetLostState) {
                 return Text("Connection lost");
               } else {
                 return Text("Loading...");
               }
-              ;
             },
           ),
         ),
